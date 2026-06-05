@@ -1,23 +1,21 @@
-# PublishAotCross
+## PublishAotZig
+这是一个包含 MSBuild 目标的 NuGet 包，用于辅助 [PublishAot](https://learn.microsoft.com/zh-cn/dotnet/core/deploying/native-aot/) 的交叉编译。使用 ZIG 工具链在 Windows 机器上交叉编译到 `linux-x64`、`linux-arm64`、`linux-musl-x64`、`linux-musl-arm64`。
 
-This is a NuGet package with an MSBuild target to aid in crosscompilation with [PublishAot](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/). It helps resolving following error:
 
-```sh
-$ dotnet publish -r linux-x64
-Microsoft.NETCore.Native.Publish.targets(59,5): error : Cross-OS native compilation is not supported.
-```
+本项目源于 [MichalStrehovsky/PublishAotCross](https://github.com/MichalStrehovsky/PublishAotCross)，做了以下额外工作：
+* 补齐 zlib.a，使依赖于 System.IO.Compression 的项目（例如 ASP.NET Core）能直接 Aot。
+* Nuget 包自带了 llvm-objcopy 工具，用于去除符号使生成的可执行文件更小。
 
-This nuget package allows using [Zig](https://ziglang.org/) as the linker/sysroot to allow crosscompiling to linux-x64/linux-arm64/linux-musl-x64/linux-musl-arm64 from a Windows machine.
 
-1. [Download](https://ziglang.org/download/) an archive with Zig for your host machine, extract it and place it on your PATH. I'm using zig-windows-x86_64-0.11.0-dev.4006+bf827d0b5.zip.
-2. Optional: [download](https://releases.llvm.org/) LLVM. We only need llvm-objcopy executable so if you care about size, you can delete the rest. The executable needs to be on PATH - you could copy it next to the Zig executable. This step is optional and is required only to strip symbols (make the produced executables smaller). If you don't care about stripping symbols, you can skip it.
-3. To your project that is already using Native AOT, add a reference to this NuGet package.
-4. Publish for one of the newly available RIDs:
-    * `dotnet publish -r linux-x64`
-    * `dotnet publish -r linux-arm64`
-    * `dotnet publish -r linux-musl-x64`
-    * `dotnet publish -r linux-musl-arm64`
+### 环境准备
+在你的 Windows 主机 [下载](https://ziglang.org/download/) Zig 压缩包，解压然后将其完整目录设置到 PATH 环境变量中。例如解压后路径是 `D:\zig-windows-x86_64-0.13.0\zig.exe`，PATH 值为 `D:\zig-windows-x86_64-0.13.0`。
 
-    If you skipped the second optional step to download llvm-objcopy, you must also pass `/p:StripSymbols=false` to the publish command, or you'll see an error instructing you to do that.
+### 如何使用   
+1. 在 Native AOT 的项目中，添加对此 [NuGet](https://www.nuget.org/packages/PublishAotZig) 包的引用。
 
-Even though Zig allows crosscompiling for Windows as well, it's not possible to crosscompile PublishAot like this due to ABI differences (MSVC vs. MingW ABI).
+2. 发布到以下的 RID 之一：
+* `dotnet publish -r linux-x64`
+* `dotnet publish -r linux-arm64`
+* `dotnet publish -r linux-musl-x64`
+* `dotnet publish -r linux-musl-arm64`
+
