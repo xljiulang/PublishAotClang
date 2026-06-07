@@ -12,5 +12,8 @@
 	<ItemGroup>
 		<None Include="build\**" PackagePath="build" Pack="true"/>
 		<None Include="../README.md" PackagePath="/" Pack="true" />
+
+		<!--打包zig工具，zig工具文件因文件过大，无法做为源代码提交到github-->
+		<None Include="D:\sdk\zig-0.16\**" PackagePath="build" Pack="true"/>
 	</ItemGroup>
 </Project>
