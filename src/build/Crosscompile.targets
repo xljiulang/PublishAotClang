@@ -37,22 +37,29 @@
 			BeforeTargets="LinkNative">
 
 		<PropertyGroup>
-			<CrossCompileRid />
-			<CrossCompileRid>$(RuntimeIdentifier)</CrossCompileRid>
-
-			<CrossCompileArch />
-			<CrossCompileArch Condition="$(CrossCompileRid.EndsWith('-x64'))">x86_64</CrossCompileArch>
-			<CrossCompileArch Condition="$(CrossCompileRid.EndsWith('-arm64'))">aarch64</CrossCompileArch>
-
 			<TargetTriple />
-			<TargetTriple Condition="'$(CrossCompileArch)' != ''">$(CrossCompileArch)-linux-gnu</TargetTriple>
-			<TargetTriple Condition="'$(CrossCompileArch)' != '' and ($(CrossCompileRid.StartsWith('linux-musl')) or $(CrossCompileRid.StartsWith('alpine')))">$(CrossCompileArch)-linux-musl</TargetTriple>
+			<TargetTriple Condition="'$(RuntimeIdentifier)' == 'linux-x64'">x86_64-linux-gnu</TargetTriple>
+			<!--当前目标运行时标识符“linux-x86”不支持提前编译-->
+			<TargetTriple Condition="'$(RuntimeIdentifier)' == 'linux-x86'">i386-linux-gnu</TargetTriple>
+			<TargetTriple Condition="'$(RuntimeIdentifier)' == 'linux-arm64'">aarch64-linux-gnu</TargetTriple>
+			<TargetTriple Condition="'$(RuntimeIdentifier)' == 'linux-arm'">arm-linux-gnueabihf</TargetTriple>
+
+			<TargetTriple Condition="'$(RuntimeIdentifier)' == 'linux-musl-x64'">x86_64-linux-musl</TargetTriple>
+			<!--当前目标运行时标识符“linux-musl-x86”不支持提前编译-->
+			<TargetTriple Condition="'$(RuntimeIdentifier)' == 'linux-musl-x86'">i386-linux-musl</TargetTriple>
+			<TargetTriple Condition="'$(RuntimeIdentifier)' == 'linux-musl-arm64'">aarch64-linux-musl</TargetTriple>
+			<TargetTriple Condition="'$(RuntimeIdentifier)' == 'linux-musl-arm'">arm-linux-musleabihf</TargetTriple>
+
+			<NugetLibPath>$(MSBuildThisFileDirectory)libs\$(RuntimeIdentifier)</NugetLibPath>
 		</PropertyGroup>
 
+		<Message Importance="high" Text=".NET RID is '$(RuntimeIdentifier)' and zig target is '$(TargetTriple)'" />
 		<ItemGroup>
 			<LinkerArg Include="--target=$(TargetTriple)" />
-			<!-- libs such as libz -->
-			<LinkerArg Include="-L$(MSBuildThisFileDirectory)libs\$(RuntimeIdentifier)" Condition="$(RuntimeIdentifier.StartsWith('linux'))" />
+		</ItemGroup>
+
+		<ItemGroup Condition="Exists('$(NugetLibPath)')">
+			<LinkerArg Include="-L$(NugetLibPath)"/>
 		</ItemGroup>
 
 	</Target>
