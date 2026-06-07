@@ -8,7 +8,14 @@
 		<InvariantGlobalization>true</InvariantGlobalization>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<PackageReference Include="Vezel.Zig.Toolsets.win-x64" Version="0.16.0.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
 	<Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 
-	<Import Project="../src/build/PublishAotZig.targets" />
+	<Import Project="../src/build/PublishAotClang.targets" />
 </Project>

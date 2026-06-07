@@ -2,15 +2,7 @@
 
 	<PropertyGroup>
 		<DisableUnsupportedError>true</DisableUnsupportedError>
-		<ZigVersion Condition="'$(ZigVersion)' == ''">0.16.0.2</ZigVersion>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Vezel.Zig.Toolsets.win-x64" Version="$(ZigVersion)">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-		</PackageReference>
-	</ItemGroup>
 
 	<UsingTask TaskName="PrependPath"
 			   TaskFactory="RoslynCodeTaskFactory"
@@ -32,18 +24,18 @@
 
 	</UsingTask>
 
-	<Target Name="SetPathToZig" BeforeTargets="SetupOSSpecificProps">
-		<Message Importance="high" Text="PublishAotZig: SetPathToZig '$(ZigToolsetPath)'" />
-		<PrependPath Value="$(ZigToolsetPath)" />
-	</Target>
-
 	<Target Name="SetPathToClang" BeforeTargets="SetupOSSpecificProps">
 		<PropertyGroup>
 			<ClangToolsetPath>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)../tools'))</ClangToolsetPath>
 		</PropertyGroup>
 
-		<Message Importance="high" Text="PublishAotZig: SetPathToClang '$(ClangToolsetPath)'" />
+		<Message Importance="high" Text="PublishAotClang: SetPathToClang '$(ClangToolsetPath)'" />
 		<PrependPath Value="$(ClangToolsetPath)" />
+	</Target>
+
+	<Target Name="SetPathToZig" BeforeTargets="SetupOSSpecificProps">
+		<Message Importance="high" Text="PublishAotClang: SetPathToZig '$(ZigToolsetPath)'" />
+		<PrependPath Value="$(ZigToolsetPath)" />
 	</Target>
 
 	<!-- BEGIN: Works around ILCompiler targets not detecting this as a cross compilation -->
@@ -68,12 +60,12 @@
 			<RidLibsPath>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)../tools/libs/$(RuntimeIdentifier)'))</RidLibsPath>
 		</PropertyGroup>
 
-		<Message Importance="high" Text="PublishAotZig: Set zig target to '$(TargetTriple)'" />
+		<Message Importance="high" Text="PublishAotClang: Set zig target to '$(TargetTriple)'" />
 		<ItemGroup>
 			<LinkerArg Include="--target=$(TargetTriple)" />
 		</ItemGroup>
 
-		<Message Importance="high" Text="PublishAotZig: Add library directory '$(RidLibsPath)'" Condition="Exists('$(RidLibsPath)')" />
+		<Message Importance="high" Text="PublishAotClang: Add zlib directory '$(RidLibsPath)'" Condition="Exists('$(RidLibsPath)')" />
 		<ItemGroup Condition="Exists('$(RidLibsPath)')">
 			<LinkerArg Include="-L$(RidLibsPath)"/>
 		</ItemGroup>

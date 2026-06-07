@@ -1,14 +1,17 @@
 <Project Sdk="Microsoft.Build.NoTargets">
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<Version>1.0.1</Version>
+		<Version>1.0.0</Version>
 		<Authors>Michal Strehovsky/老九</Authors>
 		<Description>MSBuild targets to aid in crosscompiling Native AOT publishing.</Description>
 		<PackageProjectUrl>https://github.com/xljiulang/PublishAotZig</PackageProjectUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<DevelopmentDependency>true</DevelopmentDependency>
+		<PackageReadmeFile>README.md</PackageReadmeFile> 
 	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Vezel.Zig.Toolsets.win-x64" Version="0.16.0.2" PrivateAssets="None" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="build\**" PackagePath="build" Pack="true"/>
