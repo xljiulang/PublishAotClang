@@ -1,19 +1,18 @@
 <Project Sdk="Microsoft.Build.NoTargets">
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<Authors>Michal Strehovsky/老九</Authors>
 		<Description>MSBuild targets to aid in crosscompiling Native AOT publishing.</Description>
 		<PackageProjectUrl>https://github.com/xljiulang/PublishAotZig</PackageProjectUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<DevelopmentDependency>true</DevelopmentDependency>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="build\**" PackagePath="build" Pack="true"/>
+		<None Include="tools\**" PackagePath="tools" Pack="true"/>
 		<None Include="../README.md" PackagePath="/" Pack="true" />
-
-		<!--打包zig工具，zig工具文件因文件过大，无法做为源代码提交到github-->
-		<None Include="D:\sdk\zig-0.16\**" PackagePath="build" Pack="true"/>
 	</ItemGroup>
 </Project>

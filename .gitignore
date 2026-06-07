@@ -6,4 +6,6 @@
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
-/.vs 
+.vs
+Properties
+*.user

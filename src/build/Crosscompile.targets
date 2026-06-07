@@ -2,7 +2,15 @@
 
 	<PropertyGroup>
 		<DisableUnsupportedError>true</DisableUnsupportedError>
+		<ZigVersion Condition="'$(ZigVersion)' == ''">0.16.0.2</ZigVersion>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Vezel.Zig.Toolsets.win-x64" Version="$(ZigVersion)">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
 
 	<UsingTask TaskName="PrependPath"
 			   TaskFactory="RoslynCodeTaskFactory"
@@ -24,11 +32,18 @@
 
 	</UsingTask>
 
-	<Target Name="SetPathToClang"
-			BeforeTargets="SetupOSSpecificProps">
+	<Target Name="SetPathToZig" BeforeTargets="SetupOSSpecificProps">
+		<Message Importance="high" Text="PublishAotZig: SetPathToZig '$(ZigToolsetPath)'" />
+		<PrependPath Value="$(ZigToolsetPath)" />
+	</Target>
 
-		<PrependPath Value="$(MSBuildThisFileDirectory)" />
+	<Target Name="SetPathToClang" BeforeTargets="SetupOSSpecificProps">
+		<PropertyGroup>
+			<ClangToolsetPath>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)../tools'))</ClangToolsetPath>
+		</PropertyGroup>
 
+		<Message Importance="high" Text="PublishAotZig: SetPathToClang '$(ClangToolsetPath)'" />
+		<PrependPath Value="$(ClangToolsetPath)" />
 	</Target>
 
 	<!-- BEGIN: Works around ILCompiler targets not detecting this as a cross compilation -->
@@ -50,16 +65,17 @@
 			<TargetTriple Condition="'$(RuntimeIdentifier)' == 'linux-musl-arm64'">aarch64-linux-musl</TargetTriple>
 			<TargetTriple Condition="'$(RuntimeIdentifier)' == 'linux-musl-arm'">arm-linux-musleabihf</TargetTriple>
 
-			<NugetLibPath>$(MSBuildThisFileDirectory)libs\$(RuntimeIdentifier)</NugetLibPath>
+			<RidLibsPath>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)../tools/libs/$(RuntimeIdentifier)'))</RidLibsPath>
 		</PropertyGroup>
 
-		<Message Importance="high" Text=".NET RID is '$(RuntimeIdentifier)' and zig target is '$(TargetTriple)'" />
+		<Message Importance="high" Text="PublishAotZig: Set zig target to '$(TargetTriple)'" />
 		<ItemGroup>
 			<LinkerArg Include="--target=$(TargetTriple)" />
 		</ItemGroup>
 
-		<ItemGroup Condition="Exists('$(NugetLibPath)')">
-			<LinkerArg Include="-L$(NugetLibPath)"/>
+		<Message Importance="high" Text="PublishAotZig: Add library directory '$(RidLibsPath)'" Condition="Exists('$(RidLibsPath)')" />
+		<ItemGroup Condition="Exists('$(RidLibsPath)')">
+			<LinkerArg Include="-L$(RidLibsPath)"/>
 		</ItemGroup>
 
 	</Target>
