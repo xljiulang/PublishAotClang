@@ -19,8 +19,8 @@ pub fn build(b: *std.Build) void {
     const targets: []const std.Target.Query = &.{
         .{ .cpu_arch = .x86_64, .os_tag = .linux, .abi = .gnu },
         .{ .cpu_arch = .x86_64, .os_tag = .linux, .abi = .musl },     
-        .{ .cpu_arch = .x86, .os_tag = .linux, .abi = .gnu },
-        .{ .cpu_arch = .x86, .os_tag = .linux, .abi = .musl },       
+        // .{ .cpu_arch = .x86, .os_tag = .linux, .abi = .gnu },
+        // .{ .cpu_arch = .x86, .os_tag = .linux, .abi = .musl },       
         .{ .cpu_arch = .aarch64, .os_tag = .linux, .abi = .gnu },
         .{ .cpu_arch = .aarch64, .os_tag = .linux, .abi = .musl },      
         .{ .cpu_arch = .arm, .os_tag = .linux, .abi = .gnueabihf },
@@ -55,6 +55,10 @@ pub fn build(b: *std.Build) void {
                 "compress.c",
                 "crc32.c",
                 "deflate.c",
+                "gzclose.c",
+                "gzlib.c",
+                "gzread.c",
+                "gzwrite.c",
                 "infback.c",
                 "inffast.c",
                 "inflate.c",
@@ -63,7 +67,10 @@ pub fn build(b: *std.Build) void {
                 "uncompr.c",
                 "zutil.c",
             },
-            .flags = &.{},
+            .flags = &.{
+                "-D_LARGEFILE64_SOURCE=1",
+                "-D_FILE_OFFSET_BITS=64",
+            },
         });
 
         // 静态库
