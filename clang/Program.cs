@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Clang;
 
@@ -21,52 +22,58 @@ sealed class Program
         ["'-Wl,-rpath,$ORIGIN'"] = "-Wl,-rpath,$ORIGIN",   // 解决 .NET 8 Preview 6 的问题            
     };
 
-    public static int Main(string[] args)
+    public static int Main(string[] clangArgs)
     {
-        var zigArgs = GetZigArguments(args);
+        var zigArgs = GetZigArguments(clangArgs);
         return RunZigCompiler(zigArgs);
     }
 
-    private static string GetZigArguments(string[] args)
+    private static IEnumerable<string> GetZigArguments(string[] clangArgs)
     {
-        var zigArgs = new List<string>
-        {
-            // 解决 zig 链接器丢弃可执行文件必要部分的问题
-            "-Wl,-u,__Module"
-        };
+        yield return "cc";
 
-        foreach (var arg in args)
+        // 解决 zig 链接器丢弃可执行文件必要部分的问题
+        const string moduleArg = "-Wl,-u,__Module";
+        if (!clangArgs.Contains(moduleArg))
+        {
+            yield return moduleArg;
+        }
+
+        foreach (var clangArg in clangArgs)
         {
             // 检查是否需要跳过
-            if (_argumentsToSkip.Contains(arg))
+            if (_argumentsToSkip.Contains(clangArg))
             {
                 continue;
             }
 
             // 检查是否需要转换
-            if (_argumentReplacements.TryGetValue(arg, out var replacement))
+            if (_argumentReplacements.TryGetValue(clangArg, out var zigArg))
             {
-                zigArgs.Add(replacement);
-                continue;
+                yield return zigArg;
             }
-
-            // 保留所有其他参数
-            zigArgs.Add(arg);
+            else
+            {
+                // 保留所有其他参数
+                yield return clangArg;
+            }
         }
-
-        return string.Join(" ", zigArgs);
     }
 
-    private static int RunZigCompiler(string arguments)
+    private static int RunZigCompiler(IEnumerable<string> args)
     {
         var startInfo = new ProcessStartInfo
         {
             FileName = "zig",
-            Arguments = $"cc {arguments}",
             UseShellExecute = false,
             RedirectStandardOutput = false,
             RedirectStandardError = false
         };
+
+        foreach (var arg in args)
+        {
+            startInfo.ArgumentList.Add(arg);
+        }
 
         try
         {
