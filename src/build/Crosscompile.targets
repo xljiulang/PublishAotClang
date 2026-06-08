@@ -46,14 +46,10 @@
 		<PropertyGroup>
 			<TargetTriple />
 			<TargetTriple Condition="'$(RuntimeIdentifier)' == 'linux-x64'">x86_64-linux-gnu</TargetTriple>
-			<!--当前目标运行时标识符“linux-x86”不支持提前编译-->
-			<TargetTriple Condition="'$(RuntimeIdentifier)' == 'linux-x86'">i386-linux-gnu</TargetTriple>
 			<TargetTriple Condition="'$(RuntimeIdentifier)' == 'linux-arm64'">aarch64-linux-gnu</TargetTriple>
 			<TargetTriple Condition="'$(RuntimeIdentifier)' == 'linux-arm'">arm-linux-gnueabihf</TargetTriple>
 
 			<TargetTriple Condition="'$(RuntimeIdentifier)' == 'linux-musl-x64'">x86_64-linux-musl</TargetTriple>
-			<!--当前目标运行时标识符“linux-musl-x86”不支持提前编译-->
-			<TargetTriple Condition="'$(RuntimeIdentifier)' == 'linux-musl-x86'">i386-linux-musl</TargetTriple>
 			<TargetTriple Condition="'$(RuntimeIdentifier)' == 'linux-musl-arm64'">aarch64-linux-musl</TargetTriple>
 			<TargetTriple Condition="'$(RuntimeIdentifier)' == 'linux-musl-arm'">arm-linux-musleabihf</TargetTriple>
 
@@ -65,7 +61,7 @@
 			<LinkerArg Include="--target=$(TargetTriple)" />
 		</ItemGroup>
 
-		<Message Importance="high" Text="PublishAotClang: Add zlib directory '$(RidLibsPath)'" Condition="Exists('$(RidLibsPath)')" />
+		<Message Importance="high" Text="PublishAotClang: Add libz directory '$(RidLibsPath)'" Condition="Exists('$(RidLibsPath)')" />
 		<ItemGroup Condition="Exists('$(RidLibsPath)')">
 			<LinkerArg Include="-L$(RidLibsPath)"/>
 		</ItemGroup>
