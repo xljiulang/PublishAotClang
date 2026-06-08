@@ -1,3 +1,4 @@
+const zlib_dir = "zlib-1.3.2";
 const std = @import("std");
 
 // 将 Zig target 映射为 .NET Runtime Identifier (RID)
@@ -45,11 +46,11 @@ pub fn build(b: *std.Build) void {
         });
 
         // 新 LazyPath API
-        zlib_mod.addIncludePath(b.path("zlib"));
+        zlib_mod.addIncludePath(b.path(zlib_dir));
 
         // 新 addCSourceFiles API
         zlib_mod.addCSourceFiles(.{
-            .root = b.path("zlib"),
+            .root = b.path(zlib_dir),
             .files = &[_][]const u8{
                 "adler32.c",
                 "compress.c",
@@ -92,7 +93,7 @@ pub fn build(b: *std.Build) void {
 
         // 为每个目标安装 zlib.h 头文件
         const install_header = b.addInstallFile(
-            b.path("zlib/zlib.h"),
+            b.path(b.fmt("{s}/zlib.h", .{zlib_dir})),
             b.fmt("{s}/zlib.h", .{target_str}),
         );
         b.getInstallStep().dependOn(&install_header.step);
