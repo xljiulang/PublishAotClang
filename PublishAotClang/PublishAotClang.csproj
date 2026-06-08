@@ -1,12 +1,14 @@
-<Project Sdk="Microsoft.Build.NoTargets">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<Version>1.0.1</Version>
 		<Authors>Michal Strehovsky / Laojiu</Authors>
 		<Description>用于在 Windows 上辅助 PublishAot 交叉编译到多个 linux RID 的 Nuget 包.</Description>
 		<PackageProjectUrl>https://github.com/xljiulang/PublishAotClang</PackageProjectUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -18,4 +20,5 @@
 		<None Include="tools\**" PackagePath="tools" Pack="true"/>
 		<None Include="../README.md" PackagePath="/" Pack="true" />
 	</ItemGroup>
+
 </Project>
