@@ -2,10 +2,11 @@
 这是一个由 [Zig](https://ziglang.org/) 包装成 Clang 工具链环境的 NuGet 包，用于在 Windows 上辅助 [PublishAot](https://learn.microsoft.com/zh-cn/dotnet/core/deploying/native-aot/) 交叉编译到多个 linux [RID](https://learn.microsoft.com/zh-cn/dotnet/core/rid-catalog)。
 
 本项目源于 [MichalStrehovsky/PublishAotCross](https://github.com/MichalStrehovsky/PublishAotCross)，做了以下额外工作：
-* Nuget 包含了 llvm-objcopy
-* Nuget 引用了 [Vezel.Zig.Toolsets](https://github.com/vezel-dev/zig-toolsets)
-* Nuget 包含了 .NET8.0 项目可能需要用到的 libz
-
+* [x] 集成了 llvm-objcopy，支持 `<StripSymbols>`
+* [x] 集成了 [Vezel.Zig.Toolsets](https://github.com/vezel-dev/zig-toolsets)，不需要额外安装 Zig
+* [x] 集成了 .NET8.0 压缩库依赖的 libz
+* [ ] `<StaticICULinking>`待支持
+* [ ] `<StaticOpenSslLinking>`待支持
 
 ### 如何使用   
 1. 在 Native AOT 的项目中，添加对此 [NuGet](https://www.nuget.org/packages/PublishAotClang) 包的引用。
