@@ -53,6 +53,9 @@
 			<TargetTriple Condition="'$(RuntimeIdentifier)' == 'linux-musl-arm64'">aarch64-linux-musl</TargetTriple>
 			<TargetTriple Condition="'$(RuntimeIdentifier)' == 'linux-musl-arm'">arm-linux-musleabihf</TargetTriple>
 
+			<!-- Append glibc version if specified (e.g., GLibcVersion=2.17 -> x86_64-linux-gnu.2.17) -->
+			<TargetTriple Condition="'$(GLibcVersion)' != '' And $(TargetTriple.Contains('-linux-gnu'))">$(TargetTriple).$(GLibcVersion)</TargetTriple>
+
 			<RidLibsPath>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)../tools/libs/$(RuntimeIdentifier)'))</RidLibsPath>
 		</PropertyGroup>
 

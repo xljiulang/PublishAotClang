@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-	<PropertyGroup>
+	<PropertyGroup >
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net10.0</TargetFramework>
 		<PublishAot>true</PublishAot>
 		<InvariantGlobalization>true</InvariantGlobalization>
+		<GLibcVersion Condition="'$(RuntimeIdentifier)' != 'linux-arm'">2.17</GLibcVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -11,7 +12,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
 		</PackageReference>
-	</ItemGroup> 
-	
+	</ItemGroup>
+
 	<Import Project="../../PublishAotClang/build/PublishAotClang.targets" />
 </Project>

@@ -5,7 +5,7 @@
 * Nuget 包含了 llvm-objcopy
 * Nuget 引用了 [Vezel.Zig.Toolsets](https://github.com/vezel-dev/zig-toolsets)
 * Nuget 包含了 .NET8.0 项目可能需要用到的 libz
-
+* 支持`<GLibcVersion>`指定glibc版本，例如`2.17`
 
 ### 如何使用   
 1. 在 Native AOT 的项目中，添加对此 [NuGet](https://www.nuget.org/packages/PublishAotClang) 包的引用。

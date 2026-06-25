@@ -33,16 +33,27 @@ sealed class Program
         yield return "cc";
 
         // 解决 zig 链接器丢弃可执行文件必要部分的问题
-        const string moduleArg = "-Wl,-u,__Module";
-        if (!clangArgs.Contains(moduleArg))
+        const string ModuleArg = "-Wl,-u,__Module";
+        if (!clangArgs.Contains(ModuleArg))
         {
-            yield return moduleArg;
+            yield return ModuleArg;
         }
 
-        foreach (var clangArg in clangArgs)
+        const string TargetPrefix = "--target=";
+        var lastTargetIndex = Array.FindLastIndex(clangArgs, arg => arg.StartsWith(TargetPrefix));
+
+        for (var index = 0; index < clangArgs.Length; index++)
         {
+            var clangArg = clangArgs[index];
+
             // 检查是否需要跳过
             if (_argumentsToSkip.Contains(clangArg))
+            {
+                continue;
+            }
+
+            // 跳过非最后一个 --target= 参数
+            if (clangArg.StartsWith(TargetPrefix) && index != lastTargetIndex)
             {
                 continue;
             }
