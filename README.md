@@ -2,12 +2,16 @@
 这是一个由 [Zig](https://ziglang.org/) 包装成 Clang 工具链环境的 NuGet 包，用于在 Windows 上辅助 [PublishAot](https://learn.microsoft.com/zh-cn/dotnet/core/deploying/native-aot/) 交叉编译到多个 linux [RID](https://learn.microsoft.com/zh-cn/dotnet/core/rid-catalog)。
 
 本项目源于 [MichalStrehovsky/PublishAotCross](https://github.com/MichalStrehovsky/PublishAotCross)，做了以下额外工作：
-* Nuget 包含了 llvm-objcopy，默认支持文件符号裁剪
-* Nuget 引用了 [Vezel.Zig.Toolsets](https://github.com/vezel-dev/zig-toolsets)，无需在 Windows 上安装 Zig
-* Nuget 包含了 .NET8.0 项目可能需要用到的 libz，避免依赖 libz 的项目 Aot 发布失败
-* 支持`<GLibcVersion>`指定glibc版本，例如`2.17`，.Net10.0项目也能在老旧的 centos7 上运行
-* 重写了 clang 工具，移除了 -Wl,--export-dynamic 参数，避免导出所有符号
-* 增加了 ar 工具，支持`<NativeLib>Static</NativeLib>`的静态库项目 Aot 发布
+
+
+| 工作项                          | 说明                                                                               |
+| ------------------------------- | ---------------------------------------------------------------------------------- |
+| **内置 Zig 工具链**             | 引用 `Vezel.Zig.Toolsets`，Windows 环境下无需单独安装 Zig                          |
+| **包含 llvm-objcopy**           | 默认支持 Native AOT 的符号裁剪（strip），减少最终二进制体积                        |
+| **内置各 TargetTriple 的 libz** | 解决 .NET 8.0 项目因依赖系统的 `libz` 导致 AOT 发布失败的问题                      |
+| **可指定 glibc 版本**           | 例如 `<GLibcVersion>2.17</GLibcVersion>`，.NET 10 项目也可运行于 CentOS 7 等老系统 |
+| **优化 clang 包装脚本**         | C# 重写，移除 `-Wl,--export-dynamic`，避免不必要的全局符号导出                     |
+| **增加 ar 包装工具**            | C# 编写，支持 `<NativeLib>Static</NativeLib>` 的静态库项目进行 AOT 发布            |
 
 ### 如何使用   
 1. 在 Native AOT 的项目中，添加对此 [NuGet](https://www.nuget.org/packages/PublishAotClang) 包的引用。
