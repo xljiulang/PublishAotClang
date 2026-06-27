@@ -2,11 +2,11 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<AssemblyName>clang</AssemblyName>
+		<AssemblyName>ar</AssemblyName>
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<PublishAot>true</PublishAot>
-		<Description>Zig 包装成 clang</Description>
+		<Description>Zig 包装成 ar</Description>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">

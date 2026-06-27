@@ -2,7 +2,9 @@
   <Folder Name="/Test/">
     <Project Path="Test/Net10/Net10.csproj" />
     <Project Path="Test/Net8/Net8.csproj" />
+    <Project Path="Test/Net9/Net9.csproj" />
   </Folder>
+  <Project Path="Ar/Ar.csproj" Id="70d8b4f0-702e-4b6b-ae11-de367ec54e34" />
   <Project Path="Clang/Clang.csproj" />
   <Project Path="PublishAotClang/PublishAotClang.csproj" />
 </Solution>

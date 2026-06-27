@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Clang;
@@ -13,6 +12,7 @@ sealed class Program
         "-pie",
         "-Wl,-pie",
         "-Wl,-e0x0",
+        "-Wl,--export-dynamic",  // LLD 不需要，避免导出表膨胀
     ];
 
     // 需要转换的参数映射
@@ -25,7 +25,7 @@ sealed class Program
     public static int Main(string[] clangArgs)
     {
         var zigArgs = GetZigArguments(clangArgs);
-        return RunZigCompiler(zigArgs);
+        return ZigCompiler.Run(zigArgs);
     }
 
     private static IEnumerable<string> GetZigArguments(string[] clangArgs)
@@ -68,40 +68,6 @@ sealed class Program
                 // 保留所有其他参数
                 yield return clangArg;
             }
-        }
-    }
-
-    private static int RunZigCompiler(IEnumerable<string> args)
-    {
-        var startInfo = new ProcessStartInfo
-        {
-            FileName = "zig",
-            UseShellExecute = false,
-            RedirectStandardOutput = false,
-            RedirectStandardError = false
-        };
-
-        foreach (var arg in args)
-        {
-            startInfo.ArgumentList.Add(arg);
-        }
-
-        try
-        {
-            using var process = Process.Start(startInfo);
-            if (process == null)
-            {
-                Console.Error.WriteLine("Error: Failed to start zig compiler");
-                return 1;
-            }
-
-            process.WaitForExit();
-            return process.ExitCode;
-        }
-        catch (Exception ex)
-        {
-            Console.Error.WriteLine($"Error: Failed to execute zig compiler - {ex.Message}");
-            return 1;
         }
     }
 }
