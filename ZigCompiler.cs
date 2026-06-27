@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-public static class ZigCompiler
+static class ZigCompiler
 {
     public static int Run(IEnumerable<string> args)
     {
